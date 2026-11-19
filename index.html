@@ -11,15 +11,19 @@
     <header class="app-header">
       <div>
         <h1>Stego Builder</h1>
-        <p class="subtitle">Deterministic SVG semagrams — hide short messages in plain sight</p>
+        <p class="subtitle">Deterministic steganography — hide messages in plain sight</p>
       </div>
-      <div class="header-actions">
-        <button id="btn-download-svg" class="btn btn-secondary" type="button">Download SVG</button>
-        <button id="btn-download-png" class="btn btn-primary" type="button">Download PNG</button>
-      </div>
+      <nav class="mode-tabs" role="tablist" aria-label="Steganography Mode">
+        <button type="button" class="tab-btn active" role="tab" aria-selected="true" data-tab="semagram">
+          Image Semagrams
+        </button>
+        <button type="button" class="tab-btn" role="tab" aria-selected="false" data-tab="zwc">
+          Text Steganography
+        </button>
+      </nav>
     </header>
 
-    <main class="workspace">
+    <main id="view-semagram" class="workspace" data-tab-panel="semagram">
       <aside class="controls-panel" aria-label="Encoding controls">
         <div class="control-group">
           <label for="message-input" class="control-label">
@@ -101,12 +105,103 @@
 
       <section class="preview-panel" aria-label="Generated semagram preview">
         <div id="canvas-stage" class="canvas-stage"></div>
-        <div class="breakdown-bar">
-          <span class="breakdown-title">Encoded Sequence:</span>
-          <code id="encoding-summary" class="breakdown-code"></code>
+        <div class="preview-footer">
+          <div class="breakdown-bar">
+            <span class="breakdown-title">Encoded Sequence:</span>
+            <code id="encoding-summary" class="breakdown-code"></code>
+          </div>
+          <div class="export-actions">
+            <button id="btn-download-svg" class="btn btn-secondary" type="button">Download SVG</button>
+            <button id="btn-download-png" class="btn btn-primary" type="button">Download PNG</button>
+          </div>
         </div>
       </section>
     </main>
+
+    <section id="view-zwc" class="zwc-workspace" data-tab-panel="zwc" hidden>
+      <div class="zwc-card">
+        <div class="zwc-card-header">
+          <h2>Encode Hidden Text</h2>
+          <span id="zwc-embed-badge" class="badge">0 hidden chars</span>
+        </div>
+
+        <div class="control-group">
+          <span class="control-label">Technique</span>
+          <div class="segmented segmented-3" role="group" aria-label="Text Steganography Technique">
+            <button type="button" class="seg-btn active" data-zwc-mode="distributed">Distributed ZWC</button>
+            <button type="button" class="seg-btn" data-zwc-mode="mark">Mark Letters</button>
+            <button type="button" class="seg-btn" data-zwc-mode="homoglyph">Homoglyphs</button>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label for="zwc-cover-input" class="control-label">Cover Text (Visible)</label>
+          <textarea
+            id="zwc-cover-input"
+            rows="4"
+            placeholder="Enter normal visible text..."
+          >Meeting at dawn near the old oak tree by the river path, please bring a map.</textarea>
+        </div>
+
+        <div class="control-group">
+          <label for="zwc-secret-input" class="control-label">Hidden Message</label>
+          <input
+            id="zwc-secret-input"
+            type="text"
+            value="mad"
+            placeholder="Enter secret message to hide..."
+            autocomplete="off"
+          />
+          <p id="zwc-encode-note" class="helper-text"></p>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <span>Encoded Output (Copyable)</span>
+            <button id="btn-zwc-copy" class="btn btn-primary btn-sm" type="button">Copy Text</button>
+          </div>
+          <textarea
+            id="zwc-output"
+            rows="4"
+            readonly
+            aria-label="Encoded text with steganography"
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="zwc-card">
+        <div class="zwc-card-header">
+          <h2>Decode &amp; Mark Invisible Characters</h2>
+          <span id="zwc-inspect-badge" class="badge">0 invisible chars</span>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label">
+            <label for="zwc-decode-input">Paste Text to Inspect</label>
+            <button id="btn-zwc-clear" class="btn btn-secondary btn-sm" type="button">Clear</button>
+          </div>
+          <textarea
+            id="zwc-decode-input"
+            rows="4"
+            placeholder="Paste suspicious text here to reveal invisible characters and decode any hidden message..."
+          ></textarea>
+        </div>
+
+        <div class="control-group">
+          <span class="control-label">Invisible Character Map</span>
+          <div id="zwc-marked-output" class="zwc-marked-box" aria-live="polite"></div>
+        </div>
+
+        <div class="control-group">
+          <span class="control-label">
+            Bit &amp; Byte Translation
+            <span id="zwc-decode-status" class="badge">Waiting</span>
+          </span>
+          <div id="zwc-decoded-output" class="zwc-decoded-box"></div>
+          <div id="zwc-translation-rows" class="zwc-translation-rows"></div>
+        </div>
+      </div>
+    </section>
   </div>
 
   <script type="module" src="./src/app.js"></script>
